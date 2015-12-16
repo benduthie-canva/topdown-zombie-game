@@ -91,6 +91,11 @@ var player = new Player();
 var keyboard = new Keyboard();
 var camera = new Camera();
 
+var object = [];
+	
+	object.x = 100;
+	object.y = 100;
+
 var VOLUME = 1;
 
 //var image = document.createElement("img");
@@ -219,18 +224,13 @@ function drawMap(deltaTime)
 // menu/splash function. runs every frame.
 function runSplash(deltaTime)
 {
-	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
-	{
-	resetGame();
-	gameState = STATE_GAME;
-	}
 	
-	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
-	{
+	
+	
 	resetGame();
-	//musicBackground.play();
+	
 	gameState = STATE_GAME;
-	}
+	
 }
 
 function runGame(deltaTime)
@@ -242,11 +242,8 @@ function runGame(deltaTime)
 	player.update(deltaTime);
 	
 	player.draw();
-	var object = [];
 	
-	object.x = 100;
-	object.y = 100;
-	
+	if
 	var objectDistance = Math.sqrt(Math.pow(object.x - player.center.x,2)+Math.pow(object.y - player.center.y,2))
 	
 	var m = (object.y - player.center.y) / (object.x - player.center.x);
@@ -256,20 +253,21 @@ function runGame(deltaTime)
 	
 	for (var i =0; i<50; i++)
 	{
-		context.fillStyle = "black"
-
 		var x = i * (domain/50) + object.x;
 		var y = (m * x + c);
-		//context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
 		
 		var tx = pixelToTile(x);
 		var ty = pixelToTile(y);
-
+		
+		context.fillStyle = "black"
 		if (cellAtTileCoord(LAYER_PLATFORMS, tx, ty))
 		context.fillStyle = "red"
 		
 		context.fillRect(tx*TILE - camera.worldOffsetX,ty*TILE - camera.worldOffsetY,TILE,TILE)
+		context.fillStyle = "yellow"
 		
+		context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
+
 		
 
 	}
