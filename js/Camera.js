@@ -41,7 +41,7 @@ Camera.prototype.updateCamera = function(deltaTime)
 	
 }
 
-Camera.prototype.generateMap = function(deltaTime)
+Camera.prototype.generateMap = function(deltaTime, player)
 {
 	// first if statement stops the camera moving at the end of the level.
 	var maxTilesX = Math.floor(SCREEN_WIDTH / TILE) + 3;

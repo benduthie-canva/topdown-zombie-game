@@ -89,7 +89,16 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 
-var player = new Player();
+var players = [];
+players.push(new Player());
+players.push(new Player());
+players.push(new Player());
+players.push(new Player());
+players.push(new Player());
+players.push(new Player());
+
+var currentPlayer = 0;
+
 var keyboard = new Keyboard();
 var camera = new Camera();
 
@@ -258,12 +267,18 @@ function runGame(deltaTime)
 {
 	camera.updateCamera(deltaTime);
 
-	camera.generateMap(deltaTime);	
+	camera.generateMap(deltaTime, players[currentPlayer]);	
 		object.x += object.velX;
-
-	player.update(deltaTime);
+		
 	
-	player.draw();
+
+	players[currentPlayer].update(deltaTime);
+	
+	for (var i = 0; i<players.length; i++)
+	{
+		players[i].draw();
+	}
+	
 	
 	
 	// TESTING FOR LINE OF SIGHT SYSTEM

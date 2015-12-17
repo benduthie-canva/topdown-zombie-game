@@ -225,31 +225,35 @@ Player.prototype.cheats = function()
 	// Hacks and "Checkpoints"
 	if (keyboard.isKeyDown(keyboard.KEY_0) == true)
 	{
-		this.position.x = object.x;
+		// whatever
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_1) == true)
 	{
-		
+		currentPlayer = 0;
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_2) == true)
 	{
-		
+		currentPlayer = 1;
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_3) == true)
 	{
-		
+		currentPlayer = 2;
+
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_4) == true)
 	{
+		currentPlayer = 3;
 		
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_5) == true)
 	{
-		
+		currentPlayer = 4;
+
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_6) == true)
 	{
-	
+		currentPlayer = 5;
+
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_7) == true)
 	{

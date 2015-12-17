@@ -251,37 +251,40 @@ Enemy.prototype.chooseDirection = function()
 
 Enemy.prototype.lineOfSight = function()
 {
-	var objectDistance = Math.sqrt(Math.pow(this.position.x - player.position.x,2)+Math.pow(this.position.y - player.position.y,2))
-	
-	if (objectDistance < 500)
+	for (var p = 0; p<players.length; p++)
 	{
-		var m = (this.position.y - player.position.y) / (this.position.x - player.position.x);
-		var c = player.position.y - m * player.position.x;
-		var domain =  player.position.x - this.position.x;
-		var range = player.position.y - this.position.y;
+		var objectDistance = Math.sqrt(Math.pow(this.position.x - players[p].position.x,2)+Math.pow(this.position.y - players[p].position.y,2))
 		
-		for (var i =0; i<50; i++)
+		if (objectDistance < 500)
 		{
-			var x = i * (domain/50) + this.position.x;
+			var m = (this.position.y - players[p].position.y) / (this.position.x - players[p].position.x);
+			var c = players[p].position.y - m * players[p].position.x;
+			var domain =  players[p].position.x - this.position.x;
+			var range = players[p].position.y - this.position.y;
 			
-			// IF STATEMENT as if the two objects have the same x coord, therefore the line is vertical. vertical lines have infinite gradients and y intercepts. 
-			// If line is vertical, simply spread boxes out vertically instead of based on a formula of a line.
-			if (this.position.x != player.position.x)
-			var y = (m * x + c);
-			else
-			var y = i *(range/50) + this.position.y; // multiplied by i instead of x as when line is vertical, x will be 0 essentially and fuck everything
-			
-			var tx = pixelToTile(x);
-			var ty = pixelToTile(y);
-			
-			context.fillStyle = "black"
-			if (cellAtTileCoord(LAYER_PLATFORMS, tx, ty))
-			context.fillStyle = "red"
-			
-			context.fillRect(tx*TILE - camera.worldOffsetX,ty*TILE - camera.worldOffsetY,TILE,TILE)
-			context.fillStyle = "yellow"
-			
-			context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
+			for (var i =0; i<50; i++)
+			{
+				var x = i * (domain/50) + this.position.x;
+				
+				// IF STATEMENT as if the two objects have the same x coord, therefore the line is vertical. vertical lines have infinite gradients and y intercepts. 
+				// If line is vertical, simply spread boxes out vertically instead of based on a formula of a line.
+				if (this.position.x != players[p].position.x)
+				var y = (m * x + c);
+				else
+				var y = i *(range/50) + this.position.y; // multiplied by i instead of x as when line is vertical, x will be 0 essentially and fuck everything
+				
+				var tx = pixelToTile(x);
+				var ty = pixelToTile(y);
+				
+				context.fillStyle = "black"
+				if (cellAtTileCoord(LAYER_PLATFORMS, tx, ty))
+				context.fillStyle = "red"
+				
+				context.fillRect(tx*TILE - camera.worldOffsetX,ty*TILE - camera.worldOffsetY,TILE,TILE)
+				context.fillStyle = "yellow"
+				
+				context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
+			}
 		}
 	}
 }
