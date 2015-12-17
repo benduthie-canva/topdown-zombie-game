@@ -146,8 +146,7 @@ function initialize(level1)
 			{
 				var px = tileToPixel(x);
 				var py = tileToPixel(y);
-				var enemy = new Enemy(px, py);
-				enemies.push(enemy);
+				enemies.push(new Enemy(px, py));
 			}
 			idx++;
 		}
@@ -228,6 +227,7 @@ function resetGame()
 	//highScore = player.score;
 	player = new Player();
 	camera = new Camera(); 
+	enemies.splice(0, enemies.length);
 	//musicBackground.stop();
 	initialize(LEVEL);
 }
@@ -266,6 +266,8 @@ function runGame(deltaTime)
 	player.draw();
 	
 	
+	// TESTING FOR LINE OF SIGHT SYSTEM
+	/*
 	if (object.x > 500)
 		object.velX = -5;
 	else if (object.x < 100)
@@ -299,7 +301,7 @@ function runGame(deltaTime)
 		context.fillStyle = "yellow"
 		
 		context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
-	}
+	}*/
 	
 	for(var i=0; i<enemies.length; i++)
 	{
