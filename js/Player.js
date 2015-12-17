@@ -19,7 +19,7 @@ var Player = function()
 	
 Player.prototype.update = function(deltaTime)
 {	
-	this.center.set(this.position.x - this.width/4, this.position.y - this.height/ 1.33333333333)
+	this.center.set(this.position.x - this.width/2, this.position.y - this.height/ 2)
 	
 	this.animations(deltaTime);
 	this.movement(deltaTime);

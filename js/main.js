@@ -38,8 +38,8 @@ var SCREEN_HEIGHT = canvas.height;
 
 var LEVEL = level1;
 
-var LAYER_COUNT = 2;
-var MAP = { tw: 50, th: 50};
+var LAYER_COUNT = 4;
+var MAP = { tw: 100, th: 100};
 var TILE = 16;
 var TILESET_TILE = TILE;
 var TILESET_PADDING = 0;
@@ -50,6 +50,8 @@ var TILESET_COUNT_Y = 18;
 // layer variables
 var LAYER_BACKGROUND = 0;
 var LAYER_PLATFORMS = 1;
+var LAYER_OBJECT_ENEMIES = 2;
+var LAYER_ENEMY_PATHING = 3;
 
 
 
@@ -90,6 +92,8 @@ var fpsTime = 0;
 var player = new Player();
 var keyboard = new Keyboard();
 var camera = new Camera();
+
+var enemies = [];
 
 var object = [];
 	
@@ -132,6 +136,22 @@ function initialize(level1)
 			}
 		}
 	}
+	
+	idx = 0;
+	for(var y = 0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++) 
+	{
+		for(var x = 0; x < level1.layers[LAYER_OBJECT_ENEMIES].width; x++) 
+		{
+			if(level1.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0) 
+			{
+				var px = tileToPixel(x);
+				var py = tileToPixel(y);
+				var enemy = new Enemy(px, py);
+				enemies.push(enemy);
+			}
+			idx++;
+		}
+	} 
 	
 	
 	// background music
@@ -239,12 +259,12 @@ function runGame(deltaTime)
 	camera.updateCamera(deltaTime);
 
 	camera.generateMap(deltaTime);	
-	
+		object.x += object.velX;
+
 	player.update(deltaTime);
 	
 	player.draw();
 	
-	object.x += object.velX;
 	
 	if (object.x > 500)
 		object.velX = -5;
@@ -279,10 +299,17 @@ function runGame(deltaTime)
 		context.fillStyle = "yellow"
 		
 		context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
-
-		
-
 	}
+	
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+		enemies[i].draw(deltaTime);
+	}
+	
+	
+	
+	
 
 	// update the frame counter
 	fpsTime += deltaTime;
