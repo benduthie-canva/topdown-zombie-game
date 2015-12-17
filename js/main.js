@@ -95,6 +95,7 @@ var object = [];
 	
 	object.x = 100;
 	object.y = 100;
+	object.velX = 5;
 
 var VOLUME = 1;
 
@@ -243,18 +244,29 @@ function runGame(deltaTime)
 	
 	player.draw();
 	
-	if
-	var objectDistance = Math.sqrt(Math.pow(object.x - player.center.x,2)+Math.pow(object.y - player.center.y,2))
+	object.x += object.velX;
 	
-	var m = (object.y - player.center.y) / (object.x - player.center.x);
-	var c = player.center.y - m * player.center.x;
-	var domain =  player.center.x - object.x;
-	var range = object.y - player.center.x;
+	if (object.x > 500)
+		object.velX = -5;
+	else if (object.x < 100)
+		object.velX = 5;
+	var objectDistance = Math.sqrt(Math.pow(object.x - player.position.x,2)+Math.pow(object.y - player.position.y,2))
+	
+	var m = (object.y - player.position.y) / (object.x - player.position.x);
+	var c = player.position.y - m * player.position.x;
+	var domain =  player.position.x - object.x;
+	var range = player.position.y - object.y;
 	
 	for (var i =0; i<50; i++)
 	{
 		var x = i * (domain/50) + object.x;
+		
+		// IF STATEMENT as if the two objects have the same x coord, therefore the line is vertical. vertical lines have infinite gradients and y intercepts. 
+		// If line is vertical, simply spread boxes out vertically instead of based on a formula of a line.
+		if (object.x != player.position.x)
 		var y = (m * x + c);
+		else
+		var y = i *(range/50) + object.y; // multiplied by i instead of x as when line is vertical, x will be 0 essentially and fuck everything
 		
 		var tx = pixelToTile(x);
 		var ty = pixelToTile(y);

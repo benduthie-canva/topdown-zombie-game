@@ -23,6 +23,8 @@ Player.prototype.update = function(deltaTime)
 	
 	this.animations(deltaTime);
 	this.movement(deltaTime);
+	this.cheats();
+
 }
 
 
@@ -115,7 +117,6 @@ Player.prototype.movement = function(deltaTime)
 		this.velocity.y = 0;
 	}
 	
-	//this.cheats();
 }
 
 
@@ -224,63 +225,43 @@ Player.prototype.cheats = function()
 	// Hacks and "Checkpoints"
 	if (keyboard.isKeyDown(keyboard.KEY_0) == true)
 	{
-		this.position.y = -200;
+		this.position.x = object.x;
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_1) == true)
 	{
-		//"Put a breakpoint here to freeze the game at will"
-		var freezethegamehere = 1;
+		
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_2) == true)
 	{
-		this.position.y = 432;
-		this.position.x = 5280;
-		camera.origin.x = 5296 - 500;
+		
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_3) == true)
 	{
-		this.position.y = 432;
-		this.position.x = 7834;
-		camera.origin.x = 7834 - 500;
+		
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_4) == true)
 	{
-		this.position.y = 432;
-		this.position.x = 8600;
-		camera.origin.x = 8600 - 500;
+		
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_5) == true)
 	{
 		
-		this.position.y = 336;
-		this.position.x = 10736;
-		camera.origin.x = this.position.x - 500;
 	}
-	
-	// hack to shortcut to end of level
 	if (keyboard.isKeyDown(keyboard.KEY_6) == true)
 	{
-		this.position.y = 400;
-		this.position.x = 12000;
-		camera.origin.x = this.position.x - 500;
-		//this.playerState = POGOSTICK;
-		//this.timer = 0.24;
+	
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_7) == true)
 	{
-		this.position.y = 400;
-		this.position.x = 12000;
-		camera.origin.x = this.position.x - 500;
+	
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_8) == true)
 	{
-		this.timer = 5;
-		this.playerState = LESS_GRAVITY;
+		
 	}
 	
 	if (keyboard.isKeyDown(keyboard.KEY_9) == true)
 	{
-		this.kill();
 
 	}
 }
