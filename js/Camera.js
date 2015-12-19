@@ -43,10 +43,19 @@ Camera.prototype.updateCamera = function(deltaTime)
 
 Camera.prototype.generateMap = function(deltaTime, player)
 {
+	/*if (this.origin.distance(player.position) > 50)
+	{
+		this.origin.x = player.position.x;
+		this.origin.y = player.position.y;
+	}*/
+	
+	this.origin.x = player.position.x;
+	this.origin.y = player.position.y;
+	
 	// first if statement stops the camera moving at the end of the level.
 	var maxTilesX = Math.floor(SCREEN_WIDTH / TILE) + 3;
-	var tileX = pixelToTile(player.position.x);
-	var offsetX = TILE + Math.floor(player.position.x%TILE);
+	var tileX = pixelToTile(this.origin.x);
+	var offsetX = TILE + Math.floor(this.origin.x%TILE);
 	
 	startX = tileX - Math.floor(maxTilesX / 2);
 	
@@ -62,8 +71,8 @@ Camera.prototype.generateMap = function(deltaTime, player)
 	}
 	
 	var maxTilesY = Math.floor(SCREEN_HEIGHT / TILE) + 3;
-	var tileY = pixelToTile(player.position.y);
-	var offsetY = TILE + Math.floor(player.position.y%TILE);
+	var tileY = pixelToTile(this.origin.y);
+	var offsetY = TILE + Math.floor(this.origin.y%TILE);
 	
 	startY = tileY - Math.floor(maxTilesY / 2);
 	

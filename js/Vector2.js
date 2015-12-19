@@ -35,3 +35,8 @@ Vector2.prototype.multiplyScalar = function (scalar)
 	this.x *= scalar;
 	this.y *= scalar;
 };
+
+Vector2.prototype.distance = function(vector)
+{
+	return Math.sqrt(Math.pow(this.x - vector.x,2) + Math.pow(this.y - vector.y, 2));
+}

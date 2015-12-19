@@ -130,12 +130,10 @@ Player.prototype.collisionDetection = function()
 	
 	
 	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
-	
 	var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
 	var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
-	var cellleft = cellAtTileCoord(LAYER_PLATFORMS, tx - 1, ty);
-	var cellup = cellAtTileCoord(LAYER_PLATFORMS, tx, ty - 1);
-	
+	var celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
+
 
 	
 	
@@ -145,7 +143,7 @@ Player.prototype.collisionDetection = function()
 	// y position:
 	if (this.velocity.y > 0) 
 	{
-		if ((celldown && !cell)) 
+		if ((celldown && !cell) || (celldiag && !cellright && nx)) 
 		{
 			// clamp the y position to avoid falling into platform below
 			this.position.y = tileToPixel(ty);
@@ -158,7 +156,7 @@ Player.prototype.collisionDetection = function()
 	
 	else if (this.velocity.y < 0) 
 	{
-		if ((cell && !celldown)) 
+		if ((cell && !celldown) || (cellright && !celldiag && nx)) 
 		{
 			// clamp the y position to avoid jumping into platform above
 			this.position.y = tileToPixel(ty + 1);
@@ -171,22 +169,23 @@ Player.prototype.collisionDetection = function()
 
 	if (this.velocity.x > 0) 
 	{
-		if ((cellright && !cell)) 
+		if ((cellright && !cell) || (celldiag && !celldown && ny)) 
 		{
 			// clamp the x position to avoid moving into the platform we just hit
 			this.position.x = tileToPixel(tx);
 			this.velocity.x = 0; // stop horizontal velocity
-			
+			nx = 0;
 			
 		}
 	}
 	else if (this.velocity.x < 0) 
 	{
-		if ((cell && !cellright)) 
+		if ((cell && !cellright) || (celldown && !celldiag && ny)) 
 		{
 			// clamp the x position to avoid moving into the platform we just hit
 			this.position.x = tileToPixel(tx + 1);
 			this.velocity.x = 0; // stop horizontal velocity
+			nx = 0;
 		}
 	}
 	
@@ -217,7 +216,7 @@ Player.prototype.kill = function()
 
 Player.prototype.draw = function()
 {
-	context.drawImage(this.image, this.center.x - camera.worldOffsetX, this.center.y - camera.worldOffsetY)
+	context.drawImage(this.image, this.position.x - camera.worldOffsetX, this.position.y - camera.worldOffsetY)
 }
 
 Player.prototype.cheats = function()
@@ -226,6 +225,7 @@ Player.prototype.cheats = function()
 	if (keyboard.isKeyDown(keyboard.KEY_0) == true)
 	{
 		// whatever
+		debugMode = true;
 	}
 	if (keyboard.isKeyDown(keyboard.KEY_1) == true)
 	{

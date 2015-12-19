@@ -9,6 +9,10 @@ var cellup = 0;
 var cellleft = 0;
 var cellright = 0;
 
+var patrol = 0;
+var attack = 1;
+var returnToPatrol = 2;
+
 
 var Enemy = function(x, y)
 {
@@ -28,17 +32,20 @@ var Enemy = function(x, y)
 	this.velocity = new Vector2(-1,0);
 	this.speed = 1;
 	
+	this.state = patrol;
+	
 }
 
 Enemy.prototype.update = function(deltaTime)
 {
+	this.lineOfSight();
+
+	
 	var ddx = 0; // acceleration
 	var ddy = 0; // was GRAVITY to simulate going down
 
 	// calculate the new position and velocity:
 	
-	
-
 	var tx = pixelToTile(this.position.x);
 	var ty = pixelToTile(this.position.y);
 	var nx = (this.position.x)%TILE; // true if player overlaps right
@@ -52,63 +59,82 @@ Enemy.prototype.update = function(deltaTime)
 	cellleft = cellAtTileCoord(LAYER_ENEMY_PATHING, tx - 1, ty);
 	cellup = cellAtTileCoord(LAYER_ENEMY_PATHING, tx, ty - 1);
 	
-	if (tx == this.oldtx && ty == this.oldty)
+	switch (this.state)
 	{
-		// if still in same tile, move.
-		this.position.y += (deltaTime * this.velocity.y);
-		this.position.x += (deltaTime * this.velocity.x);
-	}
-	// if enemy is in a new tile
-	else
-	{
-		this.oldtx = tx;
-		this.oldty = ty;
-		
-		switch(this.direction)
+		case patrol:	
+		if (tx == this.oldtx && ty == this.oldty)
 		{
-			case UP:
-				if (cellup && !cellleft && !cellright)
-				{
-					this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
-					this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
-				}
-				else
-					this.chooseDirection();
-			break;
-			
-			case LEFT:
-				if (cellleft && !cellup && !celldown)
-				{
-					this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
-					this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));	
-				}
-				else
-					this.chooseDirection();
-			break;
-			
-			case DOWN:
-				if (celldown && !cellleft && !cellright)
-				{
-					this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
-					this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
-				}
-				else
-					this.chooseDirection();
-			break;
-			
-			case RIGHT:
-				if (cellright && !cellup && !celldown)
-				{
-					this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
-					this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
-				}
-				else
-					this.chooseDirection();
-			break;
+			// if still in same tile, move.
+			this.position.y += (deltaTime * this.velocity.y);
+			this.position.x += (deltaTime * this.velocity.x);
 		}
+		// if enemy is in a new tile
+		else
+		{
+			this.oldtx = tx;
+			this.oldty = ty;
+			
+			switch(this.direction)
+			{
+				case UP:
+					if (cellup && !cellleft && !cellright)
+					{
+						this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
+						this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
+					}
+					else
+						this.chooseDirection();
+				break;
+				
+				case LEFT:
+					if (cellleft && !cellup && !celldown)
+					{
+						this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
+						this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));	
+					}
+					else
+						this.chooseDirection();
+				break;
+				
+				case DOWN:
+					if (celldown && !cellleft && !cellright)
+					{
+						this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
+						this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
+					}
+					else
+						this.chooseDirection();
+				break;
+				
+				case RIGHT:
+					if (cellright && !cellup && !celldown)
+					{
+						this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
+						this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
+					}
+					else
+						this.chooseDirection();
+				break;
+				
+				default:
+					this.chooseDirection();
+			}
+		}
+		break;
+		
+		
+		
+		
+		
+		
+		case attack:
+		
+		break;
+		
+		case returnToPatrol:
+		
+		break;
 	}
-	
-	
 	
 	// If the player has vertical velocity, then check to see if they have hit a platform
 	// below or above, in which case, stop their vertical velocity, and clamp their
@@ -200,7 +226,6 @@ Enemy.prototype.update = function(deltaTime)
 	break;
 	}
 	*/
-		this.lineOfSight();
 
 	
 }
@@ -275,15 +300,26 @@ Enemy.prototype.lineOfSight = function()
 				
 				var tx = pixelToTile(x);
 				var ty = pixelToTile(y);
-				
-				context.fillStyle = "black"
+				this.state = attack;
 				if (cellAtTileCoord(LAYER_PLATFORMS, tx, ty))
-				context.fillStyle = "red"
+				{
+					this.state = patrol;
+					break;
+				}
+
 				
-				context.fillRect(tx*TILE - camera.worldOffsetX,ty*TILE - camera.worldOffsetY,TILE,TILE)
-				context.fillStyle = "yellow"
 				
-				context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
+				if (debugMode)
+				{
+					context.fillStyle = "black"
+					if (cellAtTileCoord(LAYER_PLATFORMS, tx, ty))
+					context.fillStyle = "red"
+					
+					context.fillRect(tx*TILE - camera.worldOffsetX,ty*TILE - camera.worldOffsetY,TILE,TILE)
+					context.fillStyle = "yellow"
+					
+					context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
+				}
 			}
 		}
 	}

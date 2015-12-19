@@ -53,6 +53,8 @@ var LAYER_PLATFORMS = 1;
 var LAYER_OBJECT_ENEMIES = 2;
 var LAYER_ENEMY_PATHING = 3;
 
+var debugMode = false;
+
 
 
 var worldOffsetX = 10;
@@ -62,9 +64,9 @@ var METER = TILE;
  // gravitational constant
 var GRAVITY = METER * 9.8 * 6;
  // max horizontal speed (10 tiles per second)
-var MAXDX = METER * 5;
+var MAXDX = METER * 4;
  // max vertical speed (15 tiles per second)
-var MAXDY = METER* 5;
+var MAXDY = METER* 4;
  // horizontal acceleration - take 1/2 second to reach maxdx
 var ACCEL = MAXDX * 10;
  // horizontal friction - take 1/6 second to stop from maxdx
@@ -90,12 +92,12 @@ var fpsCount = 0;
 var fpsTime = 0;
 
 var players = [];
+players.push(new Player());/*
 players.push(new Player());
 players.push(new Player());
 players.push(new Player());
 players.push(new Player());
-players.push(new Player());
-players.push(new Player());
+players.push(new Player());*/
 
 var currentPlayer = 0;
 
