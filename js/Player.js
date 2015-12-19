@@ -4,7 +4,7 @@ var Player = function()
 	this.height = 30;
 	
 	this.position = new Vector2(0, 0);
-	this.position.set(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+	this.position.set(SCREEN_WIDTH/3, 40);
 	
 	this.center = new Vector2(0,0);
 	
@@ -216,7 +216,7 @@ Player.prototype.kill = function()
 
 Player.prototype.draw = function()
 {
-	context.drawImage(this.image, this.position.x - camera.worldOffsetX, this.position.y - camera.worldOffsetY)
+	context.drawImage(this.image, this.position.x - camera.worldOffsetX - this.width * .5, this.position.y - camera.worldOffsetY - this.height * 0.5)
 }
 
 Player.prototype.cheats = function()

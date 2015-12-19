@@ -34,6 +34,8 @@ var Enemy = function(x, y)
 	
 	this.state = patrol;
 	
+	this.attack = new Vector2();
+	
 }
 
 Enemy.prototype.update = function(deltaTime)
@@ -128,6 +130,7 @@ Enemy.prototype.update = function(deltaTime)
 		
 		
 		case attack:
+		this.attackMovement(deltaTime);
 		
 		break;
 		
@@ -230,6 +233,85 @@ Enemy.prototype.update = function(deltaTime)
 	
 }
 
+Enemy.prototype.attackMovement = function(deltaTime)
+{
+	
+	this.velocity.x = bound(this.attack.x - this.position.x, -MAXDX * this.speed, MAXDX * this.speed);
+	this.velocity.y = bound(this.attack.y - this.position.y, -MAXDY * this.speed, MAXDY * this.speed);
+	
+	this.position.y = this.position.y + (deltaTime * this.velocity.y);
+	this.position.x = this.position.x + (deltaTime * this.velocity.x);
+	
+	
+	var tx = pixelToTile(this.position.x);
+	var ty = pixelToTile(this.position.y);
+	var nx = (this.position.x)%TILE; // true if player overlaps right
+	var ny = (this.position.y)%TILE; // true if player overlaps below
+	
+	
+	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
+	var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
+	var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
+	var celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
+
+
+	
+	
+	
+	// If the player has vertical velocity, then check to see if they have hit a platform
+	// below or above, in which case, stop their vertical velocity, and clamp their
+	// y position:
+	/*
+	if (this.velocity.y > 0) 
+	{
+		if ((celldown && !cell) || (celldiag && !cellright && nx)) 
+		{
+			// clamp the y position to avoid falling into platform below
+			this.position.y = tileToPixel(ty);
+			this.velocity.y = 0; // stop downward velocity
+			this.falling = false; // no longer falling
+			this.jumping = false; // (or jumping)
+			ny = 0; // no longer overlaps the cells below
+		}
+	}
+	
+	else if (this.velocity.y < 0) 
+	{
+		if ((cell && !celldown) || (cellright && !celldiag && nx)) 
+		{
+			// clamp the y position to avoid jumping into platform above
+			this.position.y = tileToPixel(ty + 1);
+			this.velocity.y = 0; // stop upward velocity
+			// player is no longer really in that cell, we clamped them to the cell below
+			cell = celldown;
+			ny = 0; // player no longer overlaps the cells below
+		}
+	}
+
+	if (this.velocity.x > 0) 
+	{
+		if ((cellright && !cell) || (celldiag && !celldown && ny)) 
+		{
+			// clamp the x position to avoid moving into the platform we just hit
+			this.position.x = tileToPixel(tx);
+			this.velocity.x = 0; // stop horizontal velocity
+			nx = 0;
+			
+		}
+	}
+	else if (this.velocity.x < 0) 
+	{
+		if ((cell && !cellright) || (celldown && !celldiag && ny)) 
+		{
+			// clamp the x position to avoid moving into the platform we just hit
+			this.position.x = tileToPixel(tx + 1);
+			this.velocity.x = 0; // stop horizontal velocity
+			nx = 0;
+		}
+	}
+	*/
+}
+
 Enemy.prototype.chooseDirection = function()
 {		
 	number = Math.random();
@@ -280,7 +362,7 @@ Enemy.prototype.lineOfSight = function()
 	{
 		var objectDistance = Math.sqrt(Math.pow(this.position.x - players[p].position.x,2)+Math.pow(this.position.y - players[p].position.y,2))
 		
-		if (objectDistance < 500)
+		if (objectDistance < 500 && !canSeePlayer)
 		{
 			var m = (this.position.y - players[p].position.y) / (this.position.x - players[p].position.x);
 			var c = players[p].position.y - m * players[p].position.x;
@@ -300,14 +382,16 @@ Enemy.prototype.lineOfSight = function()
 				
 				var tx = pixelToTile(x);
 				var ty = pixelToTile(y);
-				this.state = attack;
+				
+				// If the player is hiding behind something, this statement will become true when the line reaches the coordinates of the wall hiding the player, effectively breaking this loop and 
 				if (cellAtTileCoord(LAYER_PLATFORMS, tx, ty))
 				{
 					this.state = patrol;
+					var canSeePlayer = false;
 					break;
 				}
-
-				
+				else
+					var canSeePlayer = true;				
 				
 				if (debugMode)
 				{
@@ -320,6 +404,15 @@ Enemy.prototype.lineOfSight = function()
 					
 					context.fillRect(x - camera.worldOffsetX,y - camera.worldOffsetY,5,5)
 				}
+			}
+			
+			if (canSeePlayer)
+			{
+				this.state = attack;
+				this.attack.set(players[p].position.x, players[p].position.y);
+				//this.attack.x = players[p].x;
+				//this.attack.y = players[p].y;
+				break;
 			}
 		}
 	}
